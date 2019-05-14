@@ -212,11 +212,6 @@ void handle_http_request(int fd, struct cache *cache)
     return;
   }
 
-  // printf("-------------------------------------------\n");
-  // printf("request %s\n", request);
-  // printf("===========================================\n");
-  // printf("bytes_recvd %d\n", bytes_recvd);
-
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
@@ -225,8 +220,6 @@ void handle_http_request(int fd, struct cache *cache)
 
   // Read the first two components of the first line of the request
   sscanf(request, "%s %s", CRUD_Type, endpoint);
-  // printf("CRUD Type = \"%s\"\n", CRUD_Type);
-  // printf("URL Endpoint = \"%s\"\n", endpoint);
 
   // If GET, handle the get endpoints
   //    Check if it's /d20 and handle that special case
@@ -278,14 +271,12 @@ int main(void)
 
     // Parent process will block on the accept() call until someone
     // makes a new connection:
-    // printf("waiting for accept...\n");
     newfd = accept(listenfd, (struct sockaddr *)&their_addr, &sin_size);
     if (newfd == -1)
     {
       perror("accept");
       continue;
     }
-    // printf("accept return.\n");
 
     // Print out a message that we got the connection
     inet_ntop(their_addr.ss_family,
