@@ -74,21 +74,21 @@ int send_response(int fd, char *header, char *content_type, void *body, int cont
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
-  sprintf(response,
-          "%s\n"
-          "Date: %s"
-          "Content-Type: %s\n"
-          "Content-Length: %d\n"
-          "Connection: close\n"
-          "\n"
-          "%s\n",
+  int response_length = sprintf(response,
+          "%s\n"                  // header
+          "Date: %s"              // timestamp - day mon ##:##:## year
+          "Content-Type: %s\n"    // mime type (e.g: text/html)
+          "Content-Length: %d\n"  // integer length of whole body string
+          "Connection: close\n"   // close or keep-alive
+          "\n",                    // closes the header in the response
           header,
           asctime(info),
           content_type,
-          content_length,
-          (char *) body
+          content_length
           );
-  int response_length = strlen(response);
+
+  memcpy(response + response_length, body, content_length);
+  response_length += content_length;
 
   // Send it all!
   int rv = send(fd, response, response_length, 0);
