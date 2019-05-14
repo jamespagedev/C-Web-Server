@@ -47,6 +47,8 @@
 
 // endpoints
 #define D20 "/d20"
+#define INDEX "/index.html"
+
 
 /**
  * Send an HTTP response
@@ -119,6 +121,30 @@ void get_d20(int fd)
   unsigned char body[2];
   sprintf(body, "%u", rnd);
   send_response(fd, "HTTP/1.1 200 OK", "text/plain", body, strlen(body));
+}
+
+void get_index(int fd)
+{
+  char filepath[4096];
+  struct file_data *filedata;
+  char *mime_type;
+
+  // Fetch the index.html file
+  snprintf(filepath, sizeof filepath, "%s/index.html", SERVER_ROOT);
+  filedata = file_load(filepath);
+
+  if (filedata == NULL)
+  {
+    // TODO: make this non-fatal
+    resp_404(fd);
+    return;
+  }
+
+  mime_type = mime_type_get(filepath);
+
+  send_response(fd, "HTTP/1.1 200 OK", mime_type, filedata->data, filedata->size);
+
+  file_free(filedata);
 }
 
 /**
@@ -210,6 +236,10 @@ void handle_http_request(int fd, struct cache *cache)
     get_d20(fd);
     // resp_404(fd);
   }
+  else if (strcmp(CRUD_Type, GET) == 0 && strcmp(endpoint, INDEX) == 0)
+  {
+    get_index(fd);
+  }
   //    Otherwise serve the requested file by calling get_file()
   else {
     resp_404(fd);
@@ -221,6 +251,7 @@ void handle_http_request(int fd, struct cache *cache)
 /**
  * Main
  * http://localhost:3490/d20
+ * http://localhost:3490/index.html
  */
 int main(void)
 {
