@@ -111,15 +111,15 @@ void get_d20(int fd)
   // IMPLEMENT ME! //
   ///////////////////
   srand(time(0));
-  unsigned char *rnd = (rand() % 20) + 1;
+  int rnd = (rand() % 20) + 1;
 
   // Use send_response() to send it back as text/plain data
 
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
-  unsigned char body[2];
-  sprintf(body, "%u", rnd);
+  char body[2];
+  sprintf(body, "%d", rnd);
   send_response(fd, "HTTP/1.1 200 OK", "text/plain", body, strlen(body));
 }
 
@@ -192,6 +192,7 @@ char *find_start_of_body(char *header)
   ///////////////////
   // IMPLEMENT ME! // (Stretch)
   ///////////////////
+  return header;
 }
 
 /**
