@@ -165,7 +165,7 @@ void get_file(int fd, struct cache *cache, char *request_path)
   (void)cache; // not sure what this is used for yet...
 
   // Fetch the index.html file
-  if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0)
+  if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
   {
     snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, INDEX);
     filedata = file_load(filepath);
