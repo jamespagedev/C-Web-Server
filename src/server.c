@@ -47,6 +47,7 @@
 
 // endpoints
 #define D20 "/d20"
+#define DEFAULT "/"
 #define INDEX "/index.html"
 
 
@@ -164,8 +165,16 @@ void get_file(int fd, struct cache *cache, char *request_path)
   (void)cache; // not sure what this is used for yet...
 
   // Fetch the index.html file
-  snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, request_path);
-  filedata = file_load(filepath);
+  if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0)
+  {
+    snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, INDEX);
+    filedata = file_load(filepath);
+  }
+  else
+  {
+    snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, request_path);
+    filedata = file_load(filepath);
+  }
 
   if (filedata == NULL)
   {
