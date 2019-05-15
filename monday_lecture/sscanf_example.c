@@ -14,7 +14,7 @@ int main (void)
   char method[8]; // REST verb
   char path[8192];
 
-  char *s = "GET /foobar HTTP/1.1\nHost: www.example.com\nConnection: close\nX-Header: whatever\n\n";
+  char *s = "GET /d20 HTTP/1.1\nHost: www.example.com\nConnection: close\nX-Header: whatever\n\n";
 
   sscanf(s, "%s %s", method, path);
 

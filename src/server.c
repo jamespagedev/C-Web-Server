@@ -164,6 +164,18 @@ void get_file(int fd, struct cache *cache, char *request_path)
   char *mime_type;
   (void)cache; // not sure what this is used for yet...
 
+  // When a file is requested, first check to see if the path to the file is in the cache (use the file path as the key).
+
+  //    If it's there, serve it back.
+
+  //    If it's not there:
+
+  //        Load the file from disk (see file.c)
+
+  //        Store it in the cache
+
+  //        Serve it
+
   // Fetch the index.html file
   if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
   {
