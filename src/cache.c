@@ -184,22 +184,27 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
     // If the cache size is greater than the max size:
     //    cache->cur_size > cache->max_size
     if (cache->cur_size > cache->max_size){
+      printf("content_type = %s\n", content_type);
       //    Remove the cache entry at the tail of the linked list.
       //      use dllist_remove_tail() from cache.c
-      dllist_remove_tail(cache); // lru
+      struct cache_entry *ce_old_tail = dllist_remove_tail(cache); // lru
 
       //    Remove that same entry from the hashtable, using the entry's path and the hashtable_delete function.
       //      use hashtable_delete() from hashtable.c
-      hashtable_delete(cache->index, path);
+      hashtable_delete(cache->index, ce_old_tail->path);
 
-      //    Free the cache entry.
+      //    Free the old tail cache entry.
       //      use free_entry() from cache.c
-      free_entry(ce);
+      free_entry(ce_old_tail);
+
+      //  Ensure the size counter for the number of entries in the cache is correct.
+      //    i dunnno you, you tell me what the entries are and how to make sure they are correct????
+      //    also, what do i do or how should I handle the entries if they are not correct????
+      if (cache->cur_size > cache->max_size){
+        printf("cache is unstable\n");
+      }
     }
 
-    //  Ensure the size counter for the number of entries in the cache is correct.
-    //    i dunnno you, you tell me what the entries are and how to make sure they are correct????
-    //    also, what do i do or how should I handle the entries if they are not correct????
 }
 
 /**
