@@ -180,7 +180,6 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
     // If the cache size is greater than the max size:
     //    cache->cur_size > cache->max_size
     if (cache->cur_size > cache->max_size){
-      printf("content_type = %s\n", content_type);
       //    Remove the cache entry at the tail of the linked list.
       //      use dllist_remove_tail() from cache.c
       struct cache_entry *ce_old_tail = dllist_remove_tail(cache); // lru

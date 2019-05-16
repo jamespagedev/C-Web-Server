@@ -171,39 +171,40 @@ void get_file(int fd, struct cache *cache, char *request_path)
   {
     send_response(fd, "HTTP/1.1 200 OK", cache->head->content_type, cache->head->content, cache->head->content_length);
   }
-
-  //    If it's not there:
-  //        Load the file from disk (see file.c)
-  if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
-  {
-    snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, INDEX);
-    filedata = file_load(filepath);
-  }
   else
   {
-    snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, request_path);
-    filedata = file_load(filepath);
+    //    If it's not there:
+    //        Load the file from disk (see file.c)
+    if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
+    {
+      snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, INDEX);
+      filedata = file_load(filepath);
+    }
+    else
+    {
+      snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, request_path);
+      filedata = file_load(filepath);
+    }
+
+    if (filedata == NULL)
+    {
+      resp_404(fd);
+      return;
+    }
+
+    mime_type = mime_type_get(filepath);
+
+    //        Store it in the cache
+    //            cache_put(cache, request_path, mime_type, filedata->data, filedata->size)
+    cache_put(cache, request_path, mime_type, filedata->data, filedata->size);
+
+    //        Serve it
+    //            cache_get() or use file
+    //            send_response(fd, "HTTP/1.1 200 OK", cache->(filedata->data), cache->(filedata->size))
+    send_response(fd, "HTTP/1.1 200 OK", mime_type, filedata->data, filedata->size);
+
+    file_free(filedata);
   }
-
-  if (filedata == NULL)
-  {
-    // TODO: make this non-fatal
-    resp_404(fd);
-    return;
-  }
-
-  mime_type = mime_type_get(filepath);
-
-  //        Store it in the cache
-  //            cache_put(cache, request_path, mime_type, filedata->data, filedata->size)
-  cache_put(cache, request_path, mime_type, filedata->data, filedata->size);
-
-  //        Serve it
-  //            cache_get() or use file
-  //            send_response(fd, "HTTP/1.1 200 OK", cache->(filedata->data), cache->(filedata->size))
-  send_response(fd, "HTTP/1.1 200 OK", mime_type, filedata->data, filedata->size);
-
-  file_free(filedata);
 }
 
 /**
@@ -251,7 +252,6 @@ void handle_http_request(int fd, struct cache *cache)
   if (strcmp(CRUD_Type, GET) == 0 && strcmp(endpoint, D20) == 0)
   {
     get_d20(fd);
-    // resp_404(fd);
   }
   else
   {
@@ -264,8 +264,11 @@ void handle_http_request(int fd, struct cache *cache)
 
 /**
  * Main
+ * http://localhost:3490
+ * http://localhost:3490/
  * http://localhost:3490/d20
  * http://localhost:3490/index.html
+ * http://localhost:3490/cat.jpg
  */
 int main(void)
 {
