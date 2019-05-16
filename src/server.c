@@ -167,11 +167,12 @@ void get_file(int fd, struct cache *cache, char *request_path)
   // When a file is requested, first check to see if the path to the file is in the cache (use the file path as the key).
 
   //    If it's there, serve it back.
-  //    if cache_get(request_path) != NULL: <------ filepath? request_path?
-  //        send_response(fd, "HTTP/1.1 200 OK", cache->(filedata->data), cache->(filedata->size))
+  if (cache_get(cache, request_path) != NULL)
+  {
+    send_response(fd, "HTTP/1.1 200 OK", cache->head->content_type, cache->head->content, cache->head->content_length);
+  }
 
   //    If it's not there:
-
   //        Load the file from disk (see file.c)
   if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
   {
@@ -195,6 +196,7 @@ void get_file(int fd, struct cache *cache, char *request_path)
 
   //        Store it in the cache
   //            cache_put(cache, request_path, mime_type, filedata->data, filedata->size)
+  cache_put(cache, request_path, mime_type, filedata->data, filedata->size);
 
   //        Serve it
   //            cache_get() or use file

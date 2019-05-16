@@ -16,6 +16,7 @@ struct cache_entry *alloc_entry(char *path, char *content_type, void *content, i
     ce->path = strdup(path);
     ce->content_type = strdup(content_type);
     ce->content_length = content_length;
+    ce->content = malloc(content_length * sizeof(int));
     memcpy(ce->content, content, content_length);
     ce->next = NULL;
     ce->prev = NULL;
@@ -194,12 +195,11 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
       //    Free the cache entry.
       //      use free_entry() from cache.c
       free_entry(ce);
-
-      //    Ensure the size counter for the number of entries in the cache is correct.
-      //      i dunnno you, you tell me what the entries are and how to make sure they are correct????
-      //      also, what do i do or how should I handle the entries if they are not correct????
-
     }
+
+    //  Ensure the size counter for the number of entries in the cache is correct.
+    //    i dunnno you, you tell me what the entries are and how to make sure they are correct????
+    //    also, what do i do or how should I handle the entries if they are not correct????
 }
 
 /**
