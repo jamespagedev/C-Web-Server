@@ -93,7 +93,7 @@ struct hashtable *hashtable_create(int size, int (*hashf)(void *, int, int))
     }
 
     if (hashf == NULL) {
-        hashf = default_hashf;
+        hashf = default_hashf; // default_hashf == ?????
     }
 
     struct hashtable *ht = malloc(sizeof *ht);

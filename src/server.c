@@ -162,21 +162,17 @@ void get_file(int fd, struct cache *cache, char *request_path)
   char filepath[4096];
   struct file_data *filedata;
   char *mime_type;
-  (void)cache; // not sure what this is used for yet...
+  (void)cache;
 
   // When a file is requested, first check to see if the path to the file is in the cache (use the file path as the key).
 
   //    If it's there, serve it back.
+  //    if cache_get(request_path) != NULL: <------ filepath? request_path?
+  //        send_response(fd, "HTTP/1.1 200 OK", cache->(filedata->data), cache->(filedata->size))
 
   //    If it's not there:
 
   //        Load the file from disk (see file.c)
-
-  //        Store it in the cache
-
-  //        Serve it
-
-  // Fetch the index.html file
   if (strcmp(request_path, INDEX) == 0 || strcmp(request_path, DEFAULT) == 0) // stretch 2
   {
     snprintf(filepath, sizeof filepath, "%s%s", SERVER_ROOT, INDEX);
@@ -197,6 +193,12 @@ void get_file(int fd, struct cache *cache, char *request_path)
 
   mime_type = mime_type_get(filepath);
 
+  //        Store it in the cache
+  //            cache_put(cache, request_path, mime_type, filedata->data, filedata->size)
+
+  //        Serve it
+  //            cache_get() or use file
+  //            send_response(fd, "HTTP/1.1 200 OK", cache->(filedata->data), cache->(filedata->size))
   send_response(fd, "HTTP/1.1 200 OK", mime_type, filedata->data, filedata->size);
 
   file_free(filedata);
