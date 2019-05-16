@@ -38,10 +38,6 @@ void free_entry(struct cache_entry *entry)
     entry->content_type = NULL;
     free(entry->content);
     entry->content = NULL;
-    free(entry->next);
-    entry->next = NULL;
-    free(entry->prev);
-    entry->prev = NULL;
     free(entry);
     entry = NULL;
 }
@@ -201,7 +197,7 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
       //    i dunnno you, you tell me what the entries are and how to make sure they are correct????
       //    also, what do i do or how should I handle the entries if they are not correct????
       if (cache->cur_size > cache->max_size){
-        printf("cache is unstable\n");
+        printf("cache->cur_size is unstable\n");
       }
     }
 
